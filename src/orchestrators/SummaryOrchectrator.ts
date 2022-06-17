@@ -9,9 +9,9 @@ import {
     initialize, setProgressStatus, setContext, fetchLocalization, fetchUserDetails, fetchActionInstance, fetchActionInstanceSummary,
     fetchMyResponse, fetchMemberCount, setIsActionDeleted, updateMyRow, updateActionInstance, fetchActionInstanceRows, updateMemberCount,
     updateActionInstanceSummary, addActionInstanceRows, updateContinuationToken, updateNonResponders, closePoll, fetchNonReponders,
-    pollCloseAlertOpen, deletePoll, pollDeleteAlertOpen, updateDueDate, pollExpiryChangeAlertOpen, downloadCSV, updateUserProfileInfo
+    pollCloseAlertOpen, deletePoll, pollDeleteAlertOpen, updateDueDate, pollExpiryChangeAlertOpen, downloadCSV, updateUserProfileInfo, addCustomOption
 } from "../actions/SummaryActions";
-import { orchestrator } from "satcheljs";
+import { action, orchestrator } from "satcheljs";
 import { ProgressState } from "../utils/SharedEnum";
 import getStore from "../store/SummaryStore";
 import * as actionSDK from "@microsoft/m365-action-sdk";
@@ -341,16 +341,17 @@ orchestrator(addCustomOption, async (actionMessage) => {
 
         setProgressStatus({ updateActionInstance: ProgressState.InProgress });
 
-        let newRows = getStore().actionInstance.dataTables;
-        newRows[0].dataColumns[0].options.push({
-            name: actionMessage.name,
-            displayName: actionMessage.name,
-        });
-
         let actionInstanceUpdateInfo: actionSDK.ActionUpdateInfo = {
             id: getStore().context.actionId,
             version: getStore().actionInstance.version,
-            dataTables: newRows
+            customProperties: [
+                {
+                    name: "customOptions",
+                    valueType: actionSDK.ActionPropertyValueType.StringSet,
+                    updateType: actionSDK.ActionPropertyUpdateType.Append,
+                    value: actionMessage.name,
+                }
+            ]
         };
 
         let response = await ActionSdkHelper.updateActionInstance(actionInstanceUpdateInfo);

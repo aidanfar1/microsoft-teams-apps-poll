@@ -71,6 +71,17 @@
                                 "value": "${name}"
                             }
                         ]
+                    },
+                    {
+                        "id": "AddChoiceInput",
+                        "type": "Input.Text",
+                        "placeholder": "${strings.AddChoice}",
+                        "inlineAction": {
+                            "type": "Action.Submit",
+                            "title": "+",
+                            "iconUrl": "https://adaptivecards.io/content/send.png",
+                            "tooltip": "${strings.AddChoice}"
+                        }
                     }
                 ]
             },

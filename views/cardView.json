@@ -71,6 +71,17 @@
                                 "value": "${name}"
                             }
                         ]
+                    },
+                    {
+                        "id": "custom",
+                        "type": "Input.Text",
+                        "$when":"true}",
+                        "placeholder": "${strings.CustomPlaceholder}",
+                        "style": "text",
+                        "inlineAction": {
+                            "type": "Action.Submit",
+                            "data": "custom"
+                        }
                     }
                 ]
             },

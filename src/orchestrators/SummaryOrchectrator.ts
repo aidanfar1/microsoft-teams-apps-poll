@@ -330,6 +330,45 @@ orchestrator(updateDueDate, async (actionMessage) => {
     }
 });
 
+orchestrator(addCustomOption, async (actionMessage) => {
+    if (getStore().progressStatus.updateActionInstance != ProgressState.InProgress) {
+        let callback = (success: boolean) => {
+            setProgressStatus({
+                updateActionInstance: success ? ProgressState.Completed : ProgressState.Failed,
+            });
+            fetchActionInstance(false);
+        };
+
+        setProgressStatus({ updateActionInstance: ProgressState.InProgress });
+
+        let newRows = getStore().actionInstance.dataTables;
+        newRows[0].dataColumns[0].options.push({
+            name: actionMessage.name,
+            displayName: actionMessage.name,
+        });
+
+        let actionInstanceUpdateInfo: actionSDK.ActionUpdateInfo = {
+            id: getStore().context.actionId,
+            version: getStore().actionInstance.version,
+            dataTables: newRows
+        };
+
+        let response = await ActionSdkHelper.updateActionInstance(actionInstanceUpdateInfo);
+        if (response.success) {
+            if (response.updateSuccess) {
+                callback(true);
+                // pollExpiryChangeAlertOpen(false);
+            } else {
+                Logger.logError(`addCustomOption failed, Error: not success`);
+                callback(false);
+            }
+        } else {
+            handleErrorResponse(response.error);
+            callback(false);
+        }
+    }
+})
+
 orchestrator(downloadCSV, async (msg) => {
     if (getStore().progressStatus.downloadData != ProgressState.InProgress) {
         setProgressStatus({ downloadData: ProgressState.InProgress });

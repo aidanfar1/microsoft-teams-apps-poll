@@ -33,6 +33,7 @@ export enum PollSummaryAction {
     fetchActionInstanceSummary = "fetchActionInstanceSummary",
     fetchNonReponders = "fetchNonReponders",
     updateDueDate = "updateDueDate",
+    addCustomOption = "addCustomOption",
     closePoll = "closePoll",
     deletePoll = "deletePoll",
     updateContinuationToken = "updateContinuationToken",
@@ -72,6 +73,10 @@ export let fetchActionInstanceSummary = action(PollSummaryAction.fetchActionInst
 
 export let updateDueDate = action(PollSummaryAction.updateDueDate, (dueDate: number) => ({
     dueDate: dueDate
+}));
+
+export let addCustomOption = action(PollSummaryAction.addCustomOption, (optionName: string)  => ({
+    name: optionName
 }));
 
 export let closePoll = action(PollSummaryAction.closePoll);
